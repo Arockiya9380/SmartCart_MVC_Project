@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SmartCart.Services;
+using SmartCart.Services.Interfaces;
 using SmartCart_MVC_Project;
 using SmartCart_MVC_Project.Data;
 
@@ -16,6 +18,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<AppSettings>(
     builder.Configuration.GetSection("AppSettings")
 );
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+
 
 var app = builder.Build();
 
