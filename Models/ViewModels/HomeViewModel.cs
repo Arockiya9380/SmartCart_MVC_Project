@@ -1,3 +1,5 @@
+using SmartCart_MVC_Project.Models.ViewModels;
+
 namespace SmartCart_MVC_Project;
 
 public class HomeViewModel

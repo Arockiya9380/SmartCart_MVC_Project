@@ -1,69 +1,87 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartCart.Services.Interfaces;
+using SmartCart_MVC_Project.Models.Entities;
+using SmartCart_MVC_Project.Models.ViewModels;
 
 namespace SmartCart_MVC_Project;
 
 public class ProductController : Controller
 {
-
     private readonly IProductService _productService;
     private readonly ICategoryService _categoryService;
-    private readonly ILogger<ProductController> _logger;
 
-    public ProductController(
-        IProductService productService,
-        ICategoryService categoryService,
-        ILogger<ProductController> logger)
+    public ProductController(IProductService productService, ICategoryService categoryService)
     {
         _productService = productService;
         _categoryService = categoryService;
-        _logger = logger;
     }
 
-    // GET: /Product
-    public IActionResult Index(string searchTerm, string category, int page = 1)
+    // GET: Product
+    public async Task<IActionResult> Index()
     {
-        _logger.LogInformation("Fetching product list");
+        var products = await _productService.GetAllProductsAsync();
 
-        var products = _productService.GetAllAsync();
-        // var products = _productService.GetAllAsync(searchTerm, category, page);
-        var categories = _categoryService.GetAllCategories();
-
-        var viewModel = new ProductListViewModel
+        var viewModel = products.Select(p => new ProductViewModel
         {
-            Products = (IEnumerable<Models.Entities.Product>)products,
-            Categories = categories,
-            SearchTerm = searchTerm,
-            SelectedCategory = category,
-            CurrentPage = page,
-            // TotalPages = _productService.GetTotalPages(searchTerm, category)
-        };
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            Price = p.Price,
+            ImageUrl = p.ImageUrl,
+            CategoryName = p.Category?.Name
+        });
 
         return View(viewModel);
     }
 
-    // GET: /Product/Details/5
-    // public IActionResult Details(int id)
+    // GET: Product/Create
+    // public IActionResult Create()
     // {
-    //     _logger.LogInformation($"Fetching product details for ProductId: {id}");
-
-    //     var product = _productService.GetByIdAsync(id);
-
-    //     if (product == null)
-    //     {
-    //         _logger.LogWarning($"Product not found. ProductId: {id}");
-    //         return NotFound();
-    //     }
-
-    //     var viewModel = new ProductViewModel
-    //     {
-    //         Name = product.,
-    //         Price = product.Price,
-    //         CategoryName = product.CategoryName,
-    //         InStock = product.InStock
-    //     };
-
-    //     return View(viewModel);
+    //     return View();
     // }
 
+    // POST: Product/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(ProductViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var product = new Product
+        {
+            Name = model.Name,
+            Description = model.Description,
+            Price = model.Price,
+            CategoryId = model.CategoryId
+        };
+
+        await _productService.CreateProductAsync(product);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Create()
+    {
+        var categories = await _categoryService.GetAllAsync();
+
+        var model = new ProductViewModel
+        {
+            Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            })
+        };
+
+        return View(model);
+    }
+
+    [Authorize(Roles = "Customer")]
+    public IActionResult Dashboard()
+    {
+        return View();
+    }
 }

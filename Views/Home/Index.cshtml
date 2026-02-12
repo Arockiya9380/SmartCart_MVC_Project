@@ -1,8 +1,61 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to @ViewBag.ApplicationName</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-wrapper">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            Welcome to <span class="text-primary">SmartCart</span>
+        </h1>
+
+        <p class="lead text-muted mb-4">
+            A modern mini e-commerce application built using ASP.NET Core MVC
+        </p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-area="Identity"       asp-page="/Account/Login"       class="btn btn-dark btn-lg px-4">
+                🔐 Login
+            </a>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-primary btn-lg px-4">
+                Manage Categories
+            </a>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-outline-success btn-lg px-4">
+                Manage Products
+            </a>
+        </div>
+    </div>
 </div>
+
+
+@* <div class="container mt-5">
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card bg-white">
+                <h4>Product Management</h4>
+                <p>
+                    Add, edit, and manage products easily with full CRUD operations.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card bg-white">
+                <h4>Category Organization</h4>
+                <p>
+                    Organize products into structured categories efficiently.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card bg-white">
+                <h4>Clean Architecture</h4>
+                <p>
+                    Built using Repository Pattern and Service Layer for scalability.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div> *@
