@@ -7,48 +7,42 @@ namespace SmartCart.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly ILogger<ProductService> _logger;
 
-        public ProductService(
-            IProductRepository productRepository,
-            ILogger<ProductService> logger)
+        public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
-            _logger = logger;
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return  _productRepository.GetAll();
+            return await _productRepository.GetProductsWithCategoryAsync();
         }
 
-        public async Task<Product?> GetByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return _productRepository.GetById(id);
+            return await _productRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId)
+        public async Task CreateProductAsync(Product product)
         {
-            return _productRepository.GetProductsByCategory(categoryId);
+            await _productRepository.AddAsync(product);
+            await _productRepository.SaveChangesAsync();
         }
 
-        public async Task AddAsync(Product product)
-        {
-            if (product.Price <= 0)
-                throw new ArgumentException("Price must be greater than zero");
-
-            _productRepository.Add(product);
-            _logger.LogInformation("Product added: {Name}", product.ProductName);
-        }
-
-        public async Task UpdateAsync(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
             _productRepository.Update(product);
+            await _productRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Product product)
+        public async Task DeleteProductAsync(int id)
         {
-            _productRepository.Delete(product);
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product != null)
+            {
+                _productRepository.Delete(product);
+                await _productRepository.SaveChangesAsync();
+            }
         }
     }
 }

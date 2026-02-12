@@ -4,6 +4,7 @@ namespace SmartCart_MVC_Project;
 
 public interface ICategoryService
 {
-    IEnumerable<Category> GetAllCategories();
-    Category? GetCategoryById(int id);
+    Task<IEnumerable<Category>> GetAllAsync();
+    Task<Category?> GetByIdAsync(int id);
+    Task CreateAsync(Category category);
 }

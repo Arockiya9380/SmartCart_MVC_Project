@@ -5,17 +5,11 @@ namespace SmartCart_MVC_Project.Models.Entities
 {
     public class Category
     {
-        [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int CategoryId { get; set; }
+        public int Id { get; set; }
 
-    [Required]
-    [Column(TypeName = "varchar(100)")]
-    public string CategoryName { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string? Description { get; set; }
 
-    [Column(TypeName = "text")] // ✅ FIX
-    public string? Description { get; set; }
-
-    public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<Product>? Products { get; set; }
     }
 }

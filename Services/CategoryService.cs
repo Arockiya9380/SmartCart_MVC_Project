@@ -1,5 +1,5 @@
-using SmartCart.Repositories;
 using SmartCart_MVC_Project.Models.Entities;
+using SmartCart_MVC_Project.Repositories;
 
 namespace SmartCart_MVC_Project;
 
@@ -12,13 +12,19 @@ public class CategoryService : ICategoryService
         _categoryRepository = categoryRepository;
     }
 
-    public IEnumerable<Category> GetAllCategories()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
-        return _categoryRepository.GetAll();
+        return await _categoryRepository.GetAllAsync();
     }
 
-    public Category? GetCategoryById(int id)
+    public async Task<Category?> GetByIdAsync(int id)
     {
-        return _categoryRepository.GetById(id);
+        return await _categoryRepository.GetByIdAsync(id);
+    }
+
+    public async Task CreateAsync(Category category)
+    {
+        await _categoryRepository.AddAsync(category);
+        await _categoryRepository.SaveChangesAsync();
     }
 }
